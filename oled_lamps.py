@@ -18,37 +18,54 @@ import subprocess
 on_time = 6
 off_time = 20
 
-#GPIO variables
+#Display GPIO setup
+RST = None
+L_pin = 27
+R_pin = 23
+C_pin = 4
+U_pin = 17
+D_pin = 22
+
+A_pin = 5
+B_pin = 6
+
+control.setmode(control.BCM)
+control.setup(A_pin, control.IN, pull_up_down=control.PUD_UP) # Input with pull-up
+control.setup(B_pin, control.IN, pull_up_down=control.PUD_UP) # Input with pull-up
+control.setup(L_pin, control.IN, pull_up_down=control.PUD_UP) # Input with pull-up
+control.setup(R_pin, control.IN, pull_up_down=control.PUD_UP) # Input with pull-up
+control.setup(U_pin, control.IN, pull_up_down=control.PUD_UP) # Input with pull-up
+control.setup(D_pin, control.IN, pull_up_down=control.PUD_UP) # Input with pull-up
+control.setup(C_pin, control.IN, pull_up_down=control.PUD_UP) # Input with pull-up
+
+disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
+
+#Relay GPIO setup
 l1_relay = 5 #relay for lamp1
 l2_relay = 6 #relay for lamp2
-
-#set pin modes
-control.setmode(control.BCM)
 control.setup(l1_relay, control.OUT)
 control.setup(l2_relay, control.OUT)
 
-#module variables
+#Internal Temp Sensor config
+control.setmode(control.BCM)
 sensor = BMP085.BMP085()
+
 
 if os.path.isfile('/sys/bus/w1/devices/28-000008014a4b/w1_slave'):
 	s1_fault = 0
 	temp1 = '/sys/bus/w1/devices/28-000008014a4b/w1_slave'
 else:
-        s1_fault = 1
+    s1_fault = 1
 	temp1 = ''
-
 
 if os.path.isfile('/sys/bus/w1/devices/28-00000801e4f4/w1_slave'):
 	temp2 = '/sys/bus/w1/devices/28-00000801e4f4/w1_slave'
 	s2_fault = 0
 else:
-        s2_fault = 1
+    s2_fault = 1
 	temp2 = ''
 
-
-
 web = '/var/www/html/monitor/index.cgi'
-
 
 def read_outside():
         temp = open(temp1)
@@ -124,125 +141,123 @@ def day():
         day = datetime.datetime.today().weekday()
         return day
 
+def disp_clear():
+
 
 def main():
-        sensor_faults()
+	disp.begin()
 
-        if s1_fault == 1:
+	sensor_faults()
 
+    if s1_fault == 1:
 	    def range():
-            	if dog_house >= 58:
-                    lamps_off()
-            	if 47 <= dog_house <= 57:
-                    lamp1_only()
-            	if dog_house <= 46:
-                    both_lamps()
-            
-            hour = int(curtime())
-            dow = int(day())
+			if dog_house >= 58:
+		        lamps_off()
+			if 47 <= dog_house <= 57:
+		        lamp1_only()
+			if dog_house <= 46:
+		        both_lamps()
 
-            dog_house = (read_house() / 1000) * 9 / 5 + 32
-            my_room = sensor.read_temperature() * 9 / 5 + 32
-
-            lcd2.clear()
-            lcd2.message("Inside: %.0fF \nOutside: NULL \nDoghouse: %.0fF" % (my_room,dog_house))
-            if dow == 2: #Is wednesday
-                    if 6 <= hour <= 21:
-                            range()
-                    else:
-                            lamps_off()
-            elif dow == 6: #Is Sunday
-                    if 2 <= hour <= 21:
-                            range()
-                    else:
-                            lamps_off()
-            else:
-                    if on_time <= hour <= off_time:
-                            range()
-                    else:
-                            lamps_off()
-    
-            time.sleep(900)
-                
-        elif s2_fault == 1:
-            def range():
-                if outside >= 58:
-                    lamps_off()
-                if 47 <= outside <= 57:
-                    lamp1_only()
-                if outside <= 46:
-                    both_lamps()
-		
-
-            hour = int(curtime())
-            dow = int(day())
-
-            outside = (read_outside() / 1000) * 9 / 5 + 32
-            my_room = sensor.read_temperature() * 9 / 5 + 32
-
-            lcd2.clear()
-            lcd2.message("Inside: %.0fF \nOutside: %.0fF \nDoghouse: NULL" % (my_room,outside))
-            if dow == 2: #Is wednesday
-                    if 6 <= hour <= 21:
-                            range()
-                    else:
-                            lamps_off()
-            elif dow == 6: #Is Sunday
-                    if 2 <= hour <= 21:
-                            range()
-                    else:
-                            lamps_off()
-            else:
-                    if on_time <= hour <= off_time:
-                            range()
-                    else:
-                            lamps_off()
-    
-            time.sleep(900)
-        else:
-            def range():
-                if outside >= 58:
-                    lamps_off()
-                elif dog_house >= 58:
-                    lamps_off()
-                if 47 <= outside <= 57:
-                    lamp1_only()
-                if outside <= 46:
-                    both_lamps()
-                elif dog_house <= 45:
-                    both_lamps()    
-	    
 	    hour = int(curtime())
-            dow = int(day())
-            outside = (read_outside() / 1000) * 9 / 5 + 32
-            dog_house = (read_house() / 1000) * 9 / 5 + 32
-            my_room = sensor.read_temperature() * 9 / 5 + 32
+	    dow = int(day())
 
-            lcd.clear()
-            lcd.message("Inside: %.0fF \nOutside: %.0fF \nDoghouse: %.0fF" % (my_room,outside,dog_house))
-            
-            if dow == 2: #Is wednesday
-                    if 6 <= hour <= 21:
-                            range()
-                    else:
-                            lamps_off()
-            elif dow == 6: #Is Sunday
-                    if 2 <= hour <= 21:
-                            range()
-                    else:
-                            lamps_off()
+	    dog_house = (read_house() / 1000) * 9 / 5 + 32
+	    my_room = sensor.read_temperature() * 9 / 5 + 32
+
+	    lcd2.clear()
+	    lcd2.message("Inside: %.0fF \nOutside: NULL \nDoghouse: %.0fF" % (my_room,dog_house))
+	    if dow == 2: #Is wednesday
+		    if 6 <= hour <= 21:
+				range()
+		    else:
+				lamps_off()
+	    elif dow == 6: #Is Sunday
+	        if 2 <= hour <= 21:
+	            range()
+	        else:
+	            lamps_off()
+	    else:
+	        if on_time <= hour <= off_time:
+	        	range()
+	        else:
+	            lamps_off()
+
+	    time.sleep(900)
+
+    elif s2_fault == 1:
+        def range():
+            if outside >= 58:
+                lamps_off()
+            if 47 <= outside <= 57:
+                lamp1_only()
+            if outside <= 46:
+                both_lamps()
+
+
+        hour = int(curtime())
+        dow = int(day())
+
+        outside = (read_outside() / 1000) * 9 / 5 + 32
+        my_room = sensor.read_temperature() * 9 / 5 + 32
+
+        lcd2.clear()
+        lcd2.message("Inside: %.0fF \nOutside: %.0fF \nDoghouse: NULL" % (my_room,outside))
+        if dow == 2: #Is wednesday
+            if 6 <= hour <= 21:
+                range()
             else:
-                    if on_time <= hour <= off_time:
-                            range()
-                    else:
-                            lamps_off()
+                lamps_off()
+        elif dow == 6: #Is Sunday
+            if 2 <= hour <= 21:
+                range()
+            else:
+                lamps_off()
+        else:
+            if on_time <= hour <= off_time:
+                range()
+            else:
+                lamps_off()
 
-            time.sleep(900)
+        time.sleep(900)
+    else:
+        def range():
+            if outside >= 58:
+                lamps_off()
+            elif dog_house >= 58:
+                lamps_off()
+            if 47 <= outside <= 57:
+                lamp1_only()
+            if outside <= 46:
+                both_lamps()
+            elif dog_house <= 45:
+                both_lamps()
+
+	    hour = int(curtime())
+	    dow = int(day())
+	    outside = (read_outside() / 1000) * 9 / 5 + 32
+	    dog_house = (read_house() / 1000) * 9 / 5 + 32
+	    my_room = sensor.read_temperature() * 9 / 5 + 32
+
+	    lcd.clear()
+	    lcd.message("Inside: %.0fF \nOutside: %.0fF \nDoghouse: %.0fF" % (my_room,outside,dog_house))
+
+	    if dow == 2: #Is wednesday
+			if 6 <= hour <= 21:
+	        	range()
+	        else:
+	            lamps_off()
+	    elif dow == 6: #Is Sunday
+	        if 2 <= hour <= 21:
+	            range()
+	        else:
+	            lamps_off()
+	    else:
+	        if on_time <= hour <= off_time:
+	            range()
+	        else:
+	            lamps_off()
+
+	    time.sleep(900)
 
 while True:
         main()
-
-
-
-
-
