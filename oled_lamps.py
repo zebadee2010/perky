@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#Reworking for new display
 import RPi.GPIO as control
 import datetime
 import time
