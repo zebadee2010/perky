@@ -125,7 +125,7 @@ while True:
     draw.text((x, top+25),    str(Disk),  font=font, fill=255)
     #draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 On
     #draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
-    #draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 On
+    draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 On
     
 
     # Display image.
