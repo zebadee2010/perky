@@ -5,7 +5,7 @@ import time
 import os
 from os import path
 from time import localtime, strftime
-import Adafruit_CharLCD as LCD
+#import Adafruit_CharLCD as LCD
 import Adafruit_BMP.BMP085 as BMP085
 import Adafruit_SSD1306
 
@@ -67,6 +67,30 @@ else:
 
 web = '/var/www/html/monitor/index.cgi'
 
+def disp_start():
+	disp.begin()
+	disp.clear()
+	disp.display()
+	width = disp.width
+	height = disp.height
+	image = Image.new('1', (width, height))
+	draw = ImageDraw.Draw(image)
+	draw.rectangle((0,0,width,height), outline=0, fill=0)
+	padding = -2
+	top = padding
+	bottom = height-padding
+	x = 0
+	font = ImageFont.load_default()
+
+def disp_content():
+	draw.rectangle((0,0,width,height), outline=0, fill=0)
+	cmd = "hostname -I | cut -d\' \' -f1"
+	IP = subprocess.check_output(cmd, shell = True)
+	cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
+	MemUsage = subprocess.check_output(cmd, shell = True)
+	draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
+	draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
+
 def read_outside():
         temp = open(temp1)
         text = temp.read()
@@ -86,41 +110,54 @@ def read_house():
 def lamps_off():
         control.output(l1_relay, False)
         control.output(l2_relay, False)
-#        if s1_fault == 1:
-#		lcd.set_color(1,1,0)
-#		lcd.message("Fault on Sensor1 \n outside")
-#	elif s2_fault ==1:
-#		lcd.set_color(1,1,0)
-#                lcd.message("Fault on Sensor2 \n Doghouse")
 
-#	else:
-#		lcd.set_color(1,0,0)
+		if s1_fault == 1:
+			draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+			draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+		elif s2_fault == 1:
+			draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+			draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+		else:
+			draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
 
 def lamp1_only():
         control.output(l1_relay, True)
         control.output(l2_relay, False)
-#        if s1_fault == 1:
-#                lcd.set_color(1,1,0)
-#		lcd.message("Fault on Sensor1 \n outside")
-#        elif s2_fault ==1:
-#                lcd.set_color(1,1,0)
-#                lcd.message("Fault on Sensor2 \n Doghouse")
 
-#        else:
-#                lcd.set_color(0,1,1)
+		if s1_fault == 1:
+			draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+			draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+		elif s2_fault == 1:
+			draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+			draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+		else:
+			draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+
+def lamp2_only():
+        control.output(l1_relay, False)
+        control.output(l2_relay, True)
+
+		if s1_fault == 1:
+			draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+			draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
+		elif s2_fault == 1:
+			draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+			draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
+		else:
+			draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
 
 def both_lamps():
         control.output(l1_relay, True)
         control.output(l2_relay, True)
-#       if s1_fault == 1:
-#               lcd.set_color(1,1,0)
-#		lcd.message("Fault on Sensor1 \n outside")
-#        elif s2_fault ==1:
-#                lcd.set_color(1,1,0)
-#                lcd.message("Fault on Sensor2 \n Doghouse")
 
-#        else:
-#		lcd.set_color(0,0,1)
+		if s1_fault == 1:
+			draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+			draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
+		elif s2_fault == 1:
+			draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+			draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
+		else:
+			draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
 
 def sensor_faults():
         if os.path.isfile(temp1):
@@ -141,11 +178,13 @@ def day():
         day = datetime.datetime.today().weekday()
         return day
 
-def disp_clear():
 
+
+def disp_draw():
+	disp.image(image)
+	disp.display()
 
 def main():
-	disp.begin()
 
 	sensor_faults()
 
