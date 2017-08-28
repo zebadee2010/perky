@@ -281,7 +281,7 @@ def main():
         #lcd.message("Inside: %.0fF \nOutside: %.0fF \nDoghouse: %.0fF" % (my_room,outside,dog_house))
 
         if dow == 2: #Is wednesday
-        	if 6 <= hour <= 21:
+            if 6 <= hour <= 21:
                 range()
             else:
                 lamps_off()
