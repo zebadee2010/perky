@@ -92,24 +92,24 @@ def disp_content():
 	draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
 
 def read_outside():
-        temp = open(temp1)
-        text = temp.read()
-        temp.close()
-        data = text.split("\n")[1].split(" ")[9]
-        outside = int(data[2:])
-        return outside
+    temp = open(temp1)
+    text = temp.read()
+    temp.close()
+    data = text.split("\n")[1].split(" ")[9]
+    outside = int(data[2:])
+    return outside
 
 def read_house():
-        temp = open(temp2)
-        text = temp.read()
-        temp.close()
-        data = text.split("\n")[1].split(" ")[9]
-        housetemp = int(data[2:])
-        return housetemp
+    temp = open(temp2)
+    text = temp.read()
+    temp.close()
+    data = text.split("\n")[1].split(" ")[9]
+    housetemp = int(data[2:])
+    return housetemp
 
 def lamps_off():
-        control.output(l1_relay, False)
-        control.output(l2_relay, False)
+    control.output(l1_relay, False)
+	control.output(l2_relay, False)
 
 	if s1_fault == 1:
 		draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
@@ -121,8 +121,8 @@ def lamps_off():
 		draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
 
 def lamp1_only():
-        control.output(l1_relay, True)
-        control.output(l2_relay, False)
+    control.output(l1_relay, True)
+    control.output(l2_relay, False)
 
 	if s1_fault == 1:
 		draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
@@ -134,8 +134,8 @@ def lamp1_only():
 		draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
 
 def lamp2_only():
-        control.output(l1_relay, False)
-        control.output(l2_relay, True)
+    control.output(l1_relay, False)
+    control.output(l2_relay, True)
 
 	if s1_fault == 1:
 		draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
@@ -147,8 +147,8 @@ def lamp2_only():
 		draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
 
 def both_lamps():
-        control.output(l1_relay, True)
-        control.output(l2_relay, True)
+    control.output(l1_relay, True)
+    control.output(l2_relay, True)
 
 	if s1_fault == 1:
 		draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
@@ -160,23 +160,23 @@ def both_lamps():
 		draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
 
 def sensor_faults():
-        if os.path.isfile(temp1):
-                s1_fault = 0
-        else:
-                s1_fault = 1
+    if os.path.isfile(temp1):
+            s1_fault = 0
+    else:
+            s1_fault = 1
 
-        if os.path.isfile(temp2):
-                s2_fault = 0
-        else:
-                s2_fault = 1
+    if os.path.isfile(temp2):
+            s2_fault = 0
+    else:
+            s2_fault = 1
 
 def curtime():
-        time = strftime("%H", localtime())
-        return time
+    time = strftime("%H", localtime())
+    return time
 
 def day():
-        day = datetime.datetime.today().weekday()
-        return day
+    day = datetime.datetime.today().weekday()
+    return day
 
 
 
@@ -190,12 +190,12 @@ def main():
 
     if s1_fault == 1:
 	    def range():
-		if dog_house >= 58:
-		    lamps_off()
-		if 47 <= dog_house <= 57:
-		    lamp1_only()
-		if dog_house <= 46:
-		    both_lamps()
+			if dog_house >= 58:
+			    lamps_off()
+			if 47 <= dog_house <= 57:
+			    lamp1_only()
+			if dog_house <= 46:
+			    both_lamps()
 
 	    hour = int(curtime())
 	    dow = int(day())
@@ -206,11 +206,11 @@ def main():
 	    #lcd2.clear()
 	    #lcd2.message("Inside: %.0fF \nOutside: NULL \nDoghouse: %.0fF" % (my_room,dog_house))
 	    if dow == 2: #Is wednesday
-		if 6 <= hour <= 21:
-		    range()
-		else:
-		    lamps_off()
-	    elif dow == 6: #Is Sunday
+			if 6 <= hour <= 21:
+			    range()
+			else:
+			    lamps_off()
+		elif dow == 6: #Is Sunday
 	        if 2 <= hour <= 21:
 	            range()
 	        else:
@@ -281,7 +281,7 @@ def main():
 	    #lcd.message("Inside: %.0fF \nOutside: %.0fF \nDoghouse: %.0fF" % (my_room,outside,dog_house))
 
 	    if dow == 2: #Is wednesday
-		if 6 <= hour <= 21:
+			if 6 <= hour <= 21:
 	            range()
 	        else:
 	            lamps_off()
