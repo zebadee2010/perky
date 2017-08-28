@@ -190,12 +190,12 @@ def main():
 
     if s1_fault == 1:
         def range():
-    		if dog_house >= 58:
-    		    lamps_off()
-    		if 47 <= dog_house <= 57:
-    		    lamp1_only()
-    		if dog_house <= 46:
-    		    both_lamps()
+            if dog_house >= 58:
+                lamps_off()
+            if 47 <= dog_house <= 57:
+                lamp1_only()
+            if dog_house <= 46:
+                both_lamps()
 
         hour = int(curtime())
         dow = int(day())
@@ -206,11 +206,11 @@ def main():
         #lcd2.clear()
         #lcd2.message("Inside: %.0fF \nOutside: NULL \nDoghouse: %.0fF" % (my_room,dog_house))
         if dow == 2: #Is wednesday
-    		if 6 <= hour <= 21:
-    		    range()
-    		else:
-    		    lamps_off()
-    	elif dow == 6: #Is Sunday
+            if 6 <= hour <= 21:
+                range()
+            else:
+                lamps_off()
+        elif dow == 6: #Is Sunday
             if 2 <= hour <= 21:
                 range()
             else:
