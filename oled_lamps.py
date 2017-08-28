@@ -52,15 +52,15 @@ sensor = BMP085.BMP085()
 
 
 if os.path.isfile('/sys/bus/w1/devices/28-000008014a4b/w1_slave'):
-	s1_fault = 0
-	temp1 = '/sys/bus/w1/devices/28-000008014a4b/w1_slave'
+    s1_fault = 0
+    temp1 = '/sys/bus/w1/devices/28-000008014a4b/w1_slave'
 else:
     s1_fault = 1
     temp1 = ''
 
 if os.path.isfile('/sys/bus/w1/devices/28-00000801e4f4/w1_slave'):
-	temp2 = '/sys/bus/w1/devices/28-00000801e4f4/w1_slave'
-	s2_fault = 0
+    temp2 = '/sys/bus/w1/devices/28-00000801e4f4/w1_slave'
+    s2_fault = 0
 else:
     s2_fault = 1
     temp2 = ''
@@ -68,28 +68,28 @@ else:
 web = '/var/www/html/monitor/index.cgi'
 
 def disp_start():
-	disp.begin()
-	disp.clear()
-	disp.display()
-	width = disp.width
-	height = disp.height
-	image = Image.new('1', (width, height))
-	draw = ImageDraw.Draw(image)
-	draw.rectangle((0,0,width,height), outline=0, fill=0)
-	padding = -2
-	top = padding
-	bottom = height-padding
-	x = 0
-	font = ImageFont.load_default()
+    disp.begin()
+    disp.clear()
+    disp.display()
+    width = disp.width
+    height = disp.height
+    image = Image.new('1', (width, height))
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((0,0,width,height), outline=0, fill=0)
+    padding = -2
+    top = padding
+    bottom = height-padding
+    x = 0
+    font = ImageFont.load_default()
 
 def disp_content():
-	draw.rectangle((0,0,width,height), outline=0, fill=0)
-	cmd = "hostname -I | cut -d\' \' -f1"
-	IP = subprocess.check_output(cmd, shell = True)
-	cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
-	MemUsage = subprocess.check_output(cmd, shell = True)
-	draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
-	draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
+    draw.rectangle((0,0,width,height), outline=0, fill=0)
+    cmd = "hostname -I | cut -d\' \' -f1"
+    IP = subprocess.check_output(cmd, shell = True)
+    cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
+    MemUsage = subprocess.check_output(cmd, shell = True)
+    draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
+    draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
 
 def read_outside():
     temp = open(temp1)
@@ -109,66 +109,66 @@ def read_house():
 
 def lamps_off():
     control.output(l1_relay, False)
-	control.output(l2_relay, False)
+    control.output(l2_relay, False)
 
-	if s1_fault == 1:
-		draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
-		draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
-	elif s2_fault == 1:
-		draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
-		draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
-	else:
-		draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+    if s1_fault == 1:
+        draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+        draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+    elif s2_fault == 1:
+        draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+        draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+    else:
+        draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
 
 def lamp1_only():
     control.output(l1_relay, True)
     control.output(l2_relay, False)
 
-	if s1_fault == 1:
-		draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
-		draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
-	elif s2_fault == 1:
-		draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
-		draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
-	else:
-		draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+    if s1_fault == 1:
+    	draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+    	draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+    elif s2_fault == 1:
+    	draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+    	draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+    else:
+    	draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
 
 def lamp2_only():
     control.output(l1_relay, False)
     control.output(l2_relay, True)
 
-	if s1_fault == 1:
-		draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
-		draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
-	elif s2_fault == 1:
-		draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
-		draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
-	else:
-		draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
+    if s1_fault == 1:
+    	draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+    	draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
+    elif s2_fault == 1:
+    	draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+    	draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
+    else:
+    	draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
 
 def both_lamps():
     control.output(l1_relay, True)
     control.output(l2_relay, True)
 
-	if s1_fault == 1:
-		draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
-		draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
-	elif s2_fault == 1:
-		draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
-		draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
-	else:
-		draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
+    if s1_fault == 1:
+    	draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+    	draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
+    elif s2_fault == 1:
+    	draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+    	draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
+    else:
+    	draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
 
 def sensor_faults():
     if os.path.isfile(temp1):
-            s1_fault = 0
+        s1_fault = 0
     else:
-            s1_fault = 1
+        s1_fault = 1
 
     if os.path.isfile(temp2):
-            s2_fault = 0
+        s2_fault = 0
     else:
-            s2_fault = 1
+        s2_fault = 1
 
 def curtime():
     time = strftime("%H", localtime())
@@ -181,47 +181,47 @@ def day():
 
 
 def disp_draw():
-	disp.image(image)
-	disp.display()
+    disp.image(image)
+    disp.display()
 
 def main():
 
     sensor_faults()
 
     if s1_fault == 1:
-	    def range():
-			if dog_house >= 58:
-			    lamps_off()
-			if 47 <= dog_house <= 57:
-			    lamp1_only()
-			if dog_house <= 46:
-			    both_lamps()
+        def range():
+    		if dog_house >= 58:
+    		    lamps_off()
+    		if 47 <= dog_house <= 57:
+    		    lamp1_only()
+    		if dog_house <= 46:
+    		    both_lamps()
 
-	    hour = int(curtime())
-	    dow = int(day())
+        hour = int(curtime())
+        dow = int(day())
 
-	    dog_house = (read_house() / 1000) * 9 / 5 + 32
-	    my_room = sensor.read_temperature() * 9 / 5 + 32
+        dog_house = (read_house() / 1000) * 9 / 5 + 32
+        my_room = sensor.read_temperature() * 9 / 5 + 32
 
-	    #lcd2.clear()
-	    #lcd2.message("Inside: %.0fF \nOutside: NULL \nDoghouse: %.0fF" % (my_room,dog_house))
-	    if dow == 2: #Is wednesday
-			if 6 <= hour <= 21:
-			    range()
-			else:
-			    lamps_off()
-		elif dow == 6: #Is Sunday
-	        if 2 <= hour <= 21:
-	            range()
-	        else:
-	            lamps_off()
-	    else:
-	        if on_time <= hour <= off_time:
-	            range()
-	        else:
-	            lamps_off()
+        #lcd2.clear()
+        #lcd2.message("Inside: %.0fF \nOutside: NULL \nDoghouse: %.0fF" % (my_room,dog_house))
+        if dow == 2: #Is wednesday
+    		if 6 <= hour <= 21:
+    		    range()
+    		else:
+    		    lamps_off()
+    	elif dow == 6: #Is Sunday
+            if 2 <= hour <= 21:
+                range()
+            else:
+                lamps_off()
+        else:
+            if on_time <= hour <= off_time:
+                range()
+            else:
+                lamps_off()
 
-	    time.sleep(900)
+        time.sleep(900)
 
     elif s2_fault == 1:
         def range():
@@ -271,32 +271,32 @@ def main():
             elif dog_house <= 45:
                 both_lamps()
 
-	    hour = int(curtime())
-	    dow = int(day())
-	    outside = (read_outside() / 1000) * 9 / 5 + 32
-	    dog_house = (read_house() / 1000) * 9 / 5 + 32
-	    my_room = sensor.read_temperature() * 9 / 5 + 32
+        hour = int(curtime())
+        dow = int(day())
+        outside = (read_outside() / 1000) * 9 / 5 + 32
+        dog_house = (read_house() / 1000) * 9 / 5 + 32
+        my_room = sensor.read_temperature() * 9 / 5 + 32
 
-	    #lcd.clear()
-	    #lcd.message("Inside: %.0fF \nOutside: %.0fF \nDoghouse: %.0fF" % (my_room,outside,dog_house))
+        #lcd.clear()
+        #lcd.message("Inside: %.0fF \nOutside: %.0fF \nDoghouse: %.0fF" % (my_room,outside,dog_house))
 
-	    if dow == 2: #Is wednesday
-			if 6 <= hour <= 21:
-	            range()
-	        else:
-	            lamps_off()
-	    elif dow == 6: #Is Sunday
-	        if 2 <= hour <= 21:
-	            range()
-	        else:
-	            lamps_off()
-	    else:
-	        if on_time <= hour <= off_time:
-	            range()
-	        else:
-	            lamps_off()
+        if dow == 2: #Is wednesday
+        	if 6 <= hour <= 21:
+                range()
+            else:
+                lamps_off()
+        elif dow == 6: #Is Sunday
+            if 2 <= hour <= 21:
+                range()
+            else:
+                lamps_off()
+        else:
+            if on_time <= hour <= off_time:
+                range()
+            else:
+                lamps_off()
 
-	    time.sleep(900)
+        time.sleep(900)
 
 while True:
         main()
