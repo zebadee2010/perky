@@ -83,7 +83,7 @@ def read_house():
     housetemp = int(data[2:])
     return housetemp
 
-def display():
+#def display():
     # disp.begin()
     # disp.clear()
     # disp.display()
@@ -132,7 +132,7 @@ def lamps_off():
     MemUsage = subprocess.check_output(cmd, shell = True)
     draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
     draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
-    draw.text((x, 46), printf("%s", fault), font = font, fill = 255)
+    draw.text((x, 46), str(fault), font = font, fill = 255)
     draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
     disp.image(image)
     disp.display()
@@ -141,7 +141,7 @@ def lamps_off():
 def lamp1_only():
     control.output(l1_relay, True)
     control.output(l2_relay, False)
-	draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+    draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
 
 def lamp2_only():
     control.output(l1_relay, False)
