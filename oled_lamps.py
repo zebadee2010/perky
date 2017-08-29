@@ -179,15 +179,15 @@ def main():
     if s1_fault == 1:
         def range():
             if dog_house >= 58:
-                lamps_off()
+                lamps_off(fault)
             if 47 <= dog_house <= 57:
-                lamp1_only()
+                lamp1_only(fault)
             if dog_house <= 46:
-                both_lamps()
+                both_lamps(fault)
     elif s2_fault == 1:
         def range():
             if outside >= 58:
-                lamps_off()
+                lamps_off(fault)
             if 47 <= outside <= 57:
                 lamp1_only()
             if outside <= 46:
