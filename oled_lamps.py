@@ -108,8 +108,10 @@ def lamps_off():
         MemUsage = subprocess.check_output(cmd, shell = True)
         draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
         draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
-        draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+        draw.text((x, 46), "Outside Sensor Fault", font = font, fill = 255)
         draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+        disp.image(image)
+        disp.display() 
     elif s2_fault == 1:
         disp.begin()
         disp.clear()
@@ -131,8 +133,10 @@ def lamps_off():
         MemUsage = subprocess.check_output(cmd, shell = True)
         draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
         draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
-        draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+        draw.text((x, 46), "Doghouse Sensor Fault", font = font, fill = 255)
         draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+        disp.image(image)
+        disp.display()    
     else:
         disp.begin()
         disp.clear()
@@ -155,16 +159,18 @@ def lamps_off():
         draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
         draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
         draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+        disp.image(image)
+        disp.display()
 
 def lamp1_only():
     control.output(l1_relay, True)
     control.output(l2_relay, False)
 
     if s1_fault == 1:
-    	draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+    	draw.text((x, 46), "Outside Sensor Fault", font = font, fill = 255)
     	draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
     elif s2_fault == 1:
-    	draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+    	draw.text((x, 46), "Doghouse Sensor Fault", font = font, fill = 255)
     	draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
     else:
     	draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
@@ -174,10 +180,10 @@ def lamp2_only():
     control.output(l2_relay, True)
 
     if s1_fault == 1:
-    	draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+    	draw.text((x, 46), "Outside Sensor Fault", font = font, fill = 255)
     	draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
     elif s2_fault == 1:
-    	draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+    	draw.text((x, 46), "Doghouse Sensor Fault", font = font, fill = 255)
     	draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
     else:
     	draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
@@ -187,10 +193,10 @@ def both_lamps():
     control.output(l2_relay, True)
 
     if s1_fault == 1:
-    	draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
+    	draw.text((x, 46), "Outside Sensor Fault", font = font, fill = 255)
     	draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
     elif s2_fault == 1:
-    	draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
+    	draw.text((x, 46), "Doghouse Sensor Fault", font = font, fill = 255)
     	draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
     else:
     	draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
