@@ -67,30 +67,6 @@ else:
 
 web = '/var/www/html/monitor/index.cgi'
 
-def disp_start():
-    disp.begin()
-    disp.clear()
-    disp.display()
-    width = disp.width
-    height = disp.height
-    image = Image.new('1', (width, height))
-    draw = ImageDraw.Draw(image)
-    draw.rectangle((0,0,width,height), outline=0, fill=0)
-    padding = -2
-    top = padding
-    bottom = height-padding
-    x = 0
-    font = ImageFont.load_default()
-
-def disp_content():
-    draw.rectangle((0,0,width,height), outline=0, fill=0)
-    cmd = "hostname -I | cut -d\' \' -f1"
-    IP = subprocess.check_output(cmd, shell = True)
-    cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
-    MemUsage = subprocess.check_output(cmd, shell = True)
-    draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
-    draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
-
 def read_outside():
     temp = open(temp1)
     text = temp.read()
@@ -112,12 +88,72 @@ def lamps_off():
     control.output(l2_relay, False)
 
     if s1_fault == 1:
+        disp.begin()
+        disp.clear()
+        disp.display()
+        width = disp.width
+        height = disp.height
+        image = Image.new('1', (width, height))
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((0,0,width,height), outline=0, fill=0)
+        padding = -2
+        top = padding
+        bottom = height-padding
+        x = 0
+        font = ImageFont.load_default()
+        draw.rectangle((0,0,width,height), outline=0, fill=0)
+        cmd = "hostname -I | cut -d\' \' -f1"
+        IP = subprocess.check_output(cmd, shell = True)
+        cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
+        MemUsage = subprocess.check_output(cmd, shell = True)
+        draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
+        draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
         draw.text((x, 48), "Outside Sensor Fault", font = font, fill = 255)
         draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
     elif s2_fault == 1:
+        disp.begin()
+        disp.clear()
+        disp.display()
+        width = disp.width
+        height = disp.height
+        image = Image.new('1', (width, height))
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((0,0,width,height), outline=0, fill=0)
+        padding = -2
+        top = padding
+        bottom = height-padding
+        x = 0
+        font = ImageFont.load_default()
+        draw.rectangle((0,0,width,height), outline=0, fill=0)
+        cmd = "hostname -I | cut -d\' \' -f1"
+        IP = subprocess.check_output(cmd, shell = True)
+        cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
+        MemUsage = subprocess.check_output(cmd, shell = True)
+        draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
+        draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
         draw.text((x, 48), "Doghouse Sensor Fault", font = font, fill = 255)
         draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
     else:
+        disp.begin()
+        disp.clear()
+        disp.display()
+        width = disp.width
+        height = disp.height
+        image = Image.new('1', (width, height))
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((0,0,width,height), outline=0, fill=0)
+        padding = -2
+        top = padding
+        bottom = height-padding
+        x = 0
+        font = ImageFont.load_default()
+        draw.rectangle((0,0,width,height), outline=0, fill=0)
+        cmd = "hostname -I | cut -d\' \' -f1"
+        IP = subprocess.check_output(cmd, shell = True)
+        cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
+        MemUsage = subprocess.check_output(cmd, shell = True)
+        draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
+        draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
         draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
 
 def lamp1_only():
