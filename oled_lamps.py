@@ -109,7 +109,7 @@ def read_house():
     # disp.image(image)
     # disp.display()
 
-def lamps_off():
+def lamps_off(fault):
     control.output(l1_relay, False)
     control.output(l2_relay, False)
     disp.begin()
@@ -231,17 +231,17 @@ def main():
         if 6 <= hour <= 21:
             range()
         else:
-            lamps_off()
+            lamps_off(fault)
     elif dow == 6: #Is Sunday
         if 2 <= hour <= 21:
             range()
         else:
-            lamps_off()
+            lamps_off(fault)
     else:
         if on_time <= hour <= off_time:
             range()
         else:
-            lamps_off()
+            lamps_off(fault)
 
     time.sleep(900)
 
