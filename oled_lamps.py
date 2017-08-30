@@ -83,35 +83,7 @@ def read_house():
     housetemp = int(data[2:])
     return housetemp
 
-#def display():
-    # disp.begin()
-    # disp.clear()
-    # disp.display()
-    # width = disp.width
-    # height = disp.height
-    # image = Image.new('1', (width, height))
-    # draw = ImageDraw.Draw(image)
-    # draw.rectangle((0,0,width,height), outline=0, fill=0)
-    # padding = -2
-    # top = padding
-    # bottom = height-padding
-    # x = 0
-    # font = ImageFont.load_default()
-    # draw.rectangle((0,0,width,height), outline=0, fill=0)
-    # cmd = "hostname -I | cut -d\' \' -f1"
-    # IP = subprocess.check_output(cmd, shell = True)
-    # cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
-    # MemUsage = subprocess.check_output(cmd, shell = True)
-    # draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
-    # draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
-    # draw.text((x, 46), printf("%s", fault), font = font, fill = 255)
-    # draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
-    # disp.image(image)
-    # disp.display()
-
-def lamps_off(fault):
-    control.output(l1_relay, False)
-    control.output(l2_relay, False)
+def display(fault,outside,dog_house,my_room,lamp1,lamp2):
     disp.begin()
     disp.clear()
     disp.display()
@@ -132,26 +104,49 @@ def lamps_off(fault):
     MemUsage = subprocess.check_output(cmd, shell = True)
     draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
     draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
+    draw.text((x, top+17), "Outside Temp: " + str(outside) + "F", font = font, fill = 255)
+    draw.text((x, top+26), "Doghouse Temp: " + str(dog_house) + "F", font = font, fill = 255)
+    draw.text((x, top+35), "Room Temp: " + str(my_room) + "F", font = font, fill = 255)
     draw.text((x, 46), str(fault), font = font, fill = 255)
-    draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+    if lamp1 == True:
+        draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+    elif lamp2 == True:
+        draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+    elif lamp1 == True and lamp2 == True:
+        draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
+    else:
+        draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
     disp.image(image)
     disp.display()
     #draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+
+
+def lamps_off(fault):
+    control.output(l1_relay, False)
+    control.output(l2_relay, False)
+    lamp1 = False
+    lamp2 = False
 
 def lamp1_only():
     control.output(l1_relay, True)
     control.output(l2_relay, False)
     draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+    lamp1 = True
+    lamp2 = False
 
 def lamp2_only():
     control.output(l1_relay, False)
     control.output(l2_relay, True)
     draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
+    lamp1 = False
+    lamp2 = True
 
 def both_lamps():
     control.output(l1_relay, True)
     control.output(l2_relay, True)
     draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
+    lamp1 = True
+    lamp2 = True
 
 def sensor_faults():
     if os.path.isfile(temp1):
@@ -179,15 +174,15 @@ def main():
     if s1_fault == 1:
         def range():
             if dog_house >= 58:
-                lamps_off(fault)
+                lamps_off()
             if 47 <= dog_house <= 57:
-                lamp1_only(fault)
+                lamp1_only()
             if dog_house <= 46:
-                both_lamps(fault)
+                both_lamps()
     elif s2_fault == 1:
         def range():
             if outside >= 58:
-                lamps_off(fault)
+                lamps_off()
             if 47 <= outside <= 57:
                 lamp1_only()
             if outside <= 46:
@@ -231,17 +226,17 @@ def main():
         if 6 <= hour <= 21:
             range()
         else:
-            lamps_off(fault)
+            lamps_off()
     elif dow == 6: #Is Sunday
         if 2 <= hour <= 21:
             range()
         else:
-            lamps_off(fault)
+            lamps_off()
     else:
         if on_time <= hour <= off_time:
             range()
         else:
-            lamps_off(fault)
+            lamps_off()
 
     time.sleep(900)
 
