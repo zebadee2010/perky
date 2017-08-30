@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+
+###################################################################
+#                          Wiring Info                            #
+#   Relay Signal GPIO pins 5,6  -  Orange And Green solid wires   #
+#     Relay Ground  -  Orange / white and green / white wires     #
+#        Sensor Grounds  -  Green and Green / White wires         #
+#         Sensor =5v  -  Orange and Orange / White wires          #
+#  Sensor Data  -  Resister =5v and Blue and Blue / White wires   #
+###################################################################
 import RPi.GPIO as control
 import datetime
 import time
