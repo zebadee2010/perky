@@ -231,7 +231,6 @@ def main():
         dog_house = (read_house() / 1000) * 9 / 5 + 32
         my_room = sensor.read_temperature() * 9 / 5 + 32
 
-    display(fault,outside,dog_house,my_room,lamp1,lamp2)
 
     if dow == 2: #Is wednesday
         if 6 <= hour <= 21:
@@ -248,6 +247,7 @@ def main():
             range()
         else:
             lamps_off()
+    display(fault,outside,dog_house,my_room,lamp1,lamp2)
 
     time.sleep(900)
 
