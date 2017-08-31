@@ -215,16 +215,16 @@ def main():
         fault = 'Outside Sensor Fault'
         dog_house = (read_house() / 1000) * 9 / 5 + 32
         my_room = sensor.read_temperature() * 9 / 5 + 32
-        outside = 'NULL'
+        outside = '--'
     elif s2_fault == 1:
         fault = 'Doghouse Sensor Fault'
         outside = (read_outside() / 1000) * 9 / 5 + 32
         my_room = sensor.read_temperature() * 9 / 5 + 32
-        dog_house = 'NULL'
+        dog_house = '--'
     elif s1_fault == 1 and s2_fault == 1:
         fault = 'SENSOR MAJOR FAULT'
-        outside = 'NULL'
-        dog_house = 'NULL'
+        outside = '--'
+        dog_house = '--'
     else:
         outside = (read_outside() / 1000) * 9 / 5 + 32
         dog_house = (read_house() / 1000) * 9 / 5 + 32
