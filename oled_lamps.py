@@ -196,7 +196,6 @@ def main():
                 lamp1_only()
             if outside <= 46:
                 both_lamps()
-
     else:
         def range():
             if outside >= 58:
@@ -217,20 +216,23 @@ def main():
         fault = 'Outside Sensor Fault'
         dog_house = (read_house() / 1000) * 9 / 5 + 32
         my_room = sensor.read_temperature() * 9 / 5 + 32
+        outside = 'NULL'
     elif s2_fault == 1:
         fault = 'Doghouse Sensor Fault'
         outside = (read_outside() / 1000) * 9 / 5 + 32
         my_room = sensor.read_temperature() * 9 / 5 + 32
+        dog_house = 'NULL'
     elif s1_fault == 1 and s2_fault == 1:
         fault = 'SENSOR MAJOR FAULT'
+        outside = 'NULL'
+        dog_house = 'NULL'
     else:
         outside = (read_outside() / 1000) * 9 / 5 + 32
         dog_house = (read_house() / 1000) * 9 / 5 + 32
         my_room = sensor.read_temperature() * 9 / 5 + 32
 
-    #function to display messages
-    #funtion to action lamps
-    #lcd.message("Inside: %.0fF \nOutside: %.0fF \nDoghouse: %.0fF" % (my_room,outside,dog_house))
+    display(fault,outside,dog_house,my_room,lamp1,lamp2)
+
     if dow == 2: #Is wednesday
         if 6 <= hour <= 21:
             range()
