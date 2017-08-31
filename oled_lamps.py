@@ -26,6 +26,8 @@ import subprocess
 
 on_time = 6
 off_time = 20
+lamp1 = False
+lamp2 = False
 
 #Display GPIO setup
 RST = None
