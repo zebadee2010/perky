@@ -130,7 +130,7 @@ def display(fault,outside,dog_house,my_room,lamp1,lamp2):
     #draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
 
 
-def lamps_off(fault):
+def lamps_off():
     control.output(l1_relay, False)
     control.output(l2_relay, False)
     lamp1 = False
