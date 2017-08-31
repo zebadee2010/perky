@@ -24,10 +24,26 @@ from PIL import ImageFont
 
 import subprocess
 
+#Global Variables
 on_time = 6
 off_time = 20
 lamp1 = False
 lamp2 = False
+web = '/var/www/html/monitor/index.cgi'
+
+if os.path.isfile('/sys/bus/w1/devices/28-000008014a4b/w1_slave'):
+    s1_fault = 0
+    temp1 = '/sys/bus/w1/devices/28-000008014a4b/w1_slave'
+else:
+    s1_fault = 1
+    temp1 = ''
+
+if os.path.isfile('/sys/bus/w1/devices/28-00000801e4f4/w1_slave'):
+    s2_fault = 0
+    temp2 = '/sys/bus/w1/devices/28-00000801e4f4/w1_slave'
+else:
+    s2_fault = 1
+    temp2 = ''
 
 #Display GPIO setup
 RST = None
@@ -58,25 +74,7 @@ control.setup(l1_relay, control.OUT)
 control.setup(l2_relay, control.OUT)
 
 #Internal Temp Sensor config
-control.setmode(control.BCM)
 sensor = BMP085.BMP085()
-
-
-if os.path.isfile('/sys/bus/w1/devices/28-000008014a4b/w1_slave'):
-    s1_fault = 0
-    temp1 = '/sys/bus/w1/devices/28-000008014a4b/w1_slave'
-else:
-    s1_fault = 1
-    temp1 = ''
-
-if os.path.isfile('/sys/bus/w1/devices/28-00000801e4f4/w1_slave'):
-    s2_fault = 0
-    temp2 = '/sys/bus/w1/devices/28-00000801e4f4/w1_slave'
-else:
-    s2_fault = 1
-    temp2 = ''
-
-web = '/var/www/html/monitor/index.cgi'
 
 def read_outside():
     temp = open(temp1)
@@ -122,14 +120,13 @@ def display(fault,outside,dog_house,my_room,lamp1,lamp2):
     if lamp1 == True:
         draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
     elif lamp2 == True:
-        draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+        draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp2 Only
     elif lamp1 == True and lamp2 == True:
         draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
     else:
         draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
     disp.image(image)
     disp.display()
-    #draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
 
 
 def lamps_off():
@@ -249,8 +246,11 @@ def main():
             range()
         else:
             lamps_off()
+
+    #Output Info to OLED display
     display(fault,outside,dog_house,my_room,lamp1,lamp2)
 
+    #Sleep 15 minutes and re-check values
     time.sleep(900)
 
 while True:
