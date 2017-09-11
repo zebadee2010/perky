@@ -138,21 +138,18 @@ def lamps_off():
 def lamp1_only():
     control.output(l1_relay, True)
     control.output(l2_relay, False)
-    draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
     lamp1 = True
     lamp2 = False
 
 def lamp2_only():
     control.output(l1_relay, False)
     control.output(l2_relay, True)
-    draw.rectangle((64,64-8,128,128), outline=0, fill=255)   #Lamp2 Only
     lamp1 = False
     lamp2 = True
 
 def both_lamps():
     control.output(l1_relay, True)
     control.output(l2_relay, True)
-    draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
     lamp1 = True
     lamp2 = True
 
