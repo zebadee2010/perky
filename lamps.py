@@ -132,26 +132,35 @@ def display(fault,outside,dog_house,my_room,lamp1,lamp2):
 def lamps_off():
     control.output(l1_relay, False)
     control.output(l2_relay, False)
+    global lamp1
     lamp1 = False
+    global lamp2
     lamp2 = False
 
 def lamp1_only():
     control.output(l1_relay, True)
     control.output(l2_relay, False)
+    global lamp1
     lamp1 = True
+    global lamp2
     lamp2 = False
 
 def lamp2_only():
     control.output(l1_relay, False)
     control.output(l2_relay, True)
+    global lamp1
     lamp1 = False
+    global lamp2
     lamp2 = True
 
 def both_lamps():
     control.output(l1_relay, True)
     control.output(l2_relay, True)
+    global lamp1
     lamp1 = True
+    global lamp2
     lamp2 = True
+
 
 def sensor_faults():
     if os.path.isfile(temp1):
