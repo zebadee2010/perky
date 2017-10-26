@@ -32,16 +32,20 @@ lamp2 = False
 web = '/var/www/html/monitor/index.cgi'
 
 if os.path.isfile('/sys/bus/w1/devices/28-000008014a4b/w1_slave'):
+    global s1_fault
     s1_fault = 0
     temp1 = '/sys/bus/w1/devices/28-000008014a4b/w1_slave'
 else:
+    global s1_fault
     s1_fault = 1
     temp1 = ''
 
 if os.path.isfile('/sys/bus/w1/devices/28-00000801e4f4/w1_slave'):
+    global s2_fault
     s2_fault = 0
     temp2 = '/sys/bus/w1/devices/28-00000801e4f4/w1_slave'
 else:
+    global s2_fault
     s2_fault = 1
     temp2 = ''
 
@@ -68,8 +72,8 @@ control.setmode(control.BCM)
 disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
 
 #Relay GPIO setup
-l1_relay = 5 #relay for lamp1
-l2_relay = 6 #relay for lamp2
+l1_relay = 6 #relay for lamp1
+l2_relay = 5 #relay for lamp2
 control.setup(l1_relay, control.OUT)
 control.setup(l2_relay, control.OUT)
 
@@ -164,13 +168,17 @@ def both_lamps():
 
 def sensor_faults():
     if os.path.isfile(temp1):
+        global s1_fault
         s1_fault = 0
     else:
+        global s1_fault
         s1_fault = 1
 
     if os.path.isfile(temp2):
+        global s2_fault
         s2_fault = 0
     else:
+        global s2_fault
         s2_fault = 1
 
 
@@ -198,7 +206,7 @@ def main():
             if outside >= 58:
                 lamps_off()
             if 47 <= outside <= 57:
-                lamp1_only()
+		lamp1_only()
             if outside <= 46:
                 both_lamps()
     else:
@@ -238,12 +246,12 @@ def main():
 
 
     if dow == 2: #Is wednesday
-        if 6 <= hour <= 21:
+        if 6 <= hour <= 22:
             range()
         else:
             lamps_off()
     elif dow == 6: #Is Sunday
-        if 2 <= hour <= 21:
+        if 2 <= hour <= 20:
             range()
         else:
             lamps_off()
