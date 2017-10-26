@@ -193,7 +193,11 @@ def day():
 def main():
     sensor_faults()
 
-    if s1_fault == 1:
+    if s1_fault == 1:        
+        fault = 'Outside Sensor Fault'
+        dog_house = (read_house() / 1000) * 9 / 5 + 32
+        my_room = sensor.read_temperature() * 9 / 5 + 32
+        outside = '--'
         def range():
             if dog_house >= 58:
                 lamps_off()
@@ -202,6 +206,10 @@ def main():
             if dog_house <= 46:
                 both_lamps()
     elif s2_fault == 1:
+        fault = 'Doghouse Sensor Fault'
+        outside = (read_outside() / 1000) * 9 / 5 + 32
+        my_room = sensor.read_temperature() * 9 / 5 + 32
+        dog_house = '--'
         def range():
             if outside >= 58:
                 lamps_off()
@@ -210,6 +218,9 @@ def main():
             if outside <= 46:
                 both_lamps()
     else:
+        outside = (read_outside() / 1000) * 9 / 5 + 32
+        dog_house = (read_house() / 1000) * 9 / 5 + 32
+        my_room = sensor.read_temperature() * 9 / 5 + 32
         def range():
             if outside >= 58:
                 lamps_off()
@@ -225,24 +236,24 @@ def main():
     hour = int(curtime())
     dow = int(day())
 
-    if s1_fault == 1:
-        fault = 'Outside Sensor Fault'
-        dog_house = (read_house() / 1000) * 9 / 5 + 32
-        my_room = sensor.read_temperature() * 9 / 5 + 32
-        outside = '--'
-    elif s2_fault == 1:
-        fault = 'Doghouse Sensor Fault'
-        outside = (read_outside() / 1000) * 9 / 5 + 32
-        my_room = sensor.read_temperature() * 9 / 5 + 32
-        dog_house = '--'
-    elif s1_fault == 1 and s2_fault == 1:
+#    if s1_fault == 1:
+#        fault = 'Outside Sensor Fault'
+#        dog_house = (read_house() / 1000) * 9 / 5 + 32
+#        my_room = sensor.read_temperature() * 9 / 5 + 32
+#        outside = '--'
+#    elif s2_fault == 1:
+#        fault = 'Doghouse Sensor Fault'
+#        outside = (read_outside() / 1000) * 9 / 5 + 32
+#        my_room = sensor.read_temperature() * 9 / 5 + 32
+#        dog_house = '--'
+    if s1_fault == 1 and s2_fault == 1:
         fault = 'SENSOR MAJOR FAULT'
         outside = '--'
         dog_house = '--'
-    else:
-        outside = (read_outside() / 1000) * 9 / 5 + 32
-        dog_house = (read_house() / 1000) * 9 / 5 + 32
-        my_room = sensor.read_temperature() * 9 / 5 + 32
+#    else:
+#        outside = (read_outside() / 1000) * 9 / 5 + 32
+#        dog_house = (read_house() / 1000) * 9 / 5 + 32
+#        my_room = sensor.read_temperature() * 9 / 5 + 32
 
 
     if dow == 2: #Is wednesday
