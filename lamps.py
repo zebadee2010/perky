@@ -12,7 +12,7 @@ import RPi.GPIO as control
 import datetime
 import time
 import os
-import sys
+import json
 import urllib2
 from os import path
 from time import localtime, strftime
@@ -29,8 +29,8 @@ import subprocess
 #Global Variables
 on_time = 6
 off_time = 20
-lamp1 = False
-lamp2 = False
+lamp1 = False  #water
+lamp2 = False  #bed
 web = '/var/www/html/monitor/index.cgi'
 
 # if os.path.isfile('/sys/bus/w1/devices/28-000008014a4b/w1_slave'):
@@ -71,7 +71,7 @@ control.setmode(control.BCM)
 #control.setup(D_pin, control.IN, pull_up_down=control.PUD_UP) # Input with pull-up
 #control.setup(C_pin, control.IN, pull_up_down=control.PUD_UP) # Input with pull-up
 
-disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
+disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
 
 #Relay GPIO setup
 l1_relay = 6 #relay for lamp1
@@ -126,10 +126,10 @@ def display(outside,my_room,lamp1,lamp2):
 #    MemUsage = subprocess.check_output(cmd, shell = True)
     draw.text((x, top), "IP: " + str(IP), font = font, fill = 255)
 #    draw.text((x, top+8), str(MemUsage), font = font, fill = 255)
-    draw.text((x, top+17), "Outside Temp: " + str(outside) + "F", font = font, fill = 255)
+    draw.text((x, top+8), "Outside Temp: " + str(outside) + "F", font = font, fill = 255)
     # draw.text((x, top+26), "Doghouse Temp: " + str(dog_house) + "F", font = font, fill = 255)
-    draw.text((x, top+35), "Room Temp: " + str(my_room) + "F", font = font, fill = 255)
-    draw.text((x, 46), str(fault), font = font, fill = 255)
+    draw.text((x, top+16), "Room Temp: " + str(my_room) + "F", font = font, fill = 255)
+    #draw.text((x, 46), str(fault), font = font, fill = 255)
     if lamp1 == True:
         draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
     elif lamp2 == True:
@@ -145,33 +145,25 @@ def display(outside,my_room,lamp1,lamp2):
 def lamps_off():
     control.output(l1_relay, False)
     control.output(l2_relay, False)
-    global lamp1
     lamp1 = False
-    global lamp2
     lamp2 = False
 
 def lamp1_only():
     control.output(l1_relay, True)
     control.output(l2_relay, False)
-    global lamp1
     lamp1 = True
-    global lamp2
     lamp2 = False
 
 def lamp2_only():
     control.output(l1_relay, False)
     control.output(l2_relay, True)
-    global lamp1
     lamp1 = False
-    global lamp2
     lamp2 = True
 
 def both_lamps():
     control.output(l1_relay, True)
     control.output(l2_relay, True)
-    global lamp1
     lamp1 = True
-    global lamp2
     lamp2 = True
 
 
@@ -200,55 +192,18 @@ def day():
     return day
 
 def main():
-    # sensor_faults()
-
-  #   if s1_fault == 1:
-  #       def range():
-  #           if dog_house >= 58:
-  #               lamps_off()
-  #           if 47 <= dog_house <= 57:
-  #               lamp1_only()
-  #           if dog_house <= 46:
-  #               both_lamps()
-  #   elif s2_fault == 1:
-  #       def range():
-  #           if outside >= 58:
-  #               lamps_off()
-  #           if 47 <= outside <= 57:
-        # lamp1_only()
-  #           if outside <= 46:
-  #               both_lamps()
-  #   else:
     def range():
         if outside >= 58:
             lamps_off()
-        elif dog_house >= 58:
-            lamps_off()
         if 47 <= outside <= 57:
-            lamp1_only()
+            lamp2_only()
         if outside <= 46:
             both_lamps()
-        elif dog_house <= 45:
-        both_lamps()
+
 
     hour = int(curtime())
     dow = int(day())
 
-    # if s1_fault == 1:
-    #     fault = 'Outside Sensor Fault'
-    #     dog_house = (read_house() / 1000) * 9 / 5 + 32
-    #     my_room = sensor.read_temperature() * 9 / 5 + 32
-    #     outside = '--'
-    # elif s2_fault == 1:
-    #     fault = 'Doghouse Sensor Fault'
-    #     outside = (read_outside() / 1000) * 9 / 5 + 32
-    #     my_room = sensor.read_temperature() * 9 / 5 + 32
-    #     dog_house = '--'
-    # elif s1_fault == 1 and s2_fault == 1:
-    #     fault = 'SENSOR MAJOR FAULT'
-    #     outside = '--'
-    #     dog_house = '--'
-    # else:
     outside = read_outside()
     # dog_house = (read_house() / 1000) * 9 / 5 + 32
     my_room = sensor.read_temperature() * 9 / 5 + 32
@@ -273,9 +228,8 @@ def main():
     #Output Info to OLED display
     # display(fault,outside,dog_house,my_room,lamp1,lamp2)
     display(outside,my_room,lamp1,lamp2)
-
     #Sleep 15 minutes and re-check values
     time.sleep(900)
 
 while True:
-        main()
+    main()
