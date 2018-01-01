@@ -28,7 +28,7 @@ import subprocess
 
 #Global Variables
 on_time = 6
-off_time = 20
+off_time = 18
 lamp1 = False  #water
 lamp2 = False  #bed
 web = '/var/www/html/monitor/index.cgi'
@@ -130,14 +130,14 @@ def display(outside,my_room,lamp1,lamp2):
     # draw.text((x, top+26), "Doghouse Temp: " + str(dog_house) + "F", font = font, fill = 255)
     draw.text((x, top+16), "Room Temp: " + str(my_room) + "F", font = font, fill = 255)
     #draw.text((x, 46), str(fault), font = font, fill = 255)
-    if lamp1 == True:
-        draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
-    elif lamp2 == True:
-        draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp2 Only
-    elif lamp1 == True and lamp2 == True:
-        draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
-    else:
-        draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
+    # if lamp1 == True:
+    #     draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp1 Only
+    # elif lamp2 == True:
+    #     draw.rectangle((0,64-8,64,64), outline=0, fill=255)   #Lamp2 Only
+    # elif lamp1 == True and lamp2 == True:
+    #     draw.rectangle((0,64-8,128,128), outline=0, fill=255)   #Both Lamps ON
+    # else:
+    #     draw.rectangle((0,64-8,128,128), outline=0, fill=0)   #Both Lamps OFF
     disp.image(image)
     disp.display()
 
@@ -215,7 +215,12 @@ def main():
         else:
             lamps_off()
     elif dow == 6: #Is Sunday
-        if 2 <= hour <= 20:
+        if 2 <= hour <= 18:
+            range()
+        else:
+            lamps_off()
+    elif dow == 4: #Is Friday
+        if 2 <= hour <= 24:
             range()
         else:
             lamps_off()
