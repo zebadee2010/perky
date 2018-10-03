@@ -91,7 +91,7 @@ sensor = BMP085.BMP085()
 #     return outside
 
 def read_outside():
-    url = "http://api.wunderground.com/api/daa1156d61530bfa/conditions/q/us/nc/ellenboro.json"
+    url = "http://api.wunderground.com//api/daa1156d61530bfa/conditions/q/pws:KNCELLEN10.json"
     response = urllib2.urlopen(url)
     data = response.read()
     outside = json.loads(data)["current_observation"]["temp_f"]
