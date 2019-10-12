@@ -21,11 +21,10 @@ from time import localtime, strftime
 import subprocess
 
 #Global Variables
-on_time = 6
-off_time = 18
+on_time = 11
+off_time = 24
 lamp1 = False  #water
 lamp2 = False  #bed
-web = '/var/www/html/monitor/index.cgi'
 
 
 #Display GPIO setup
@@ -46,10 +45,10 @@ control.setup(l1_relay, control.OUT)
 control.setup(l2_relay, control.OUT)
 
 def read_outside():
-    url = "http://api.wunderground.com//api/daa1156d61530bfa/conditions/q/pws:KNCELLEN10.json"
+    url = 'https://api.ambientweather.net/v1/devices?applicationKey=c103229ca2234ebba2ead05db7bd8c163ad2f77758f7497e8f27a9afc74aa3e1&apiKey=f0f5077b6d104b178399c603501b415bf18cb8236315407481d329b9fbf82531'
     response = urllib2.urlopen(url)
     data = response.read()
-    outside = json.loads(data)["current_observation"]["temp_f"]
+    outside = json.loads(data)[0]["lastData"]["feelsLike"]
     return outside
 
 def lamps_off():
@@ -100,19 +99,26 @@ def main():
     outside = read_outside()
     my_room = sensor.read_temperature() * 9 / 5 + 32
 
+#Monday=0
+#Tuesday=1
+#Wednesday=2
+#Thursday=3
+#FRiday=4
+#Saturday=5
+#Sunday=6
 
-    if dow == 2: #Is wednesday
-        if 6 <= hour <= 22:
-            range()
-        else:
-            lamps_off()
-    elif dow == 6: #Is Sunday
-        if 2 <= hour <= 18:
+    if dow == 3: #Is Thursday
+        if 10 <= hour <= 20:
             range()
         else:
             lamps_off()
     elif dow == 4: #Is Friday
-        if 2 <= hour <= 24:
+        if 10 <= hour <= 20:
+            range()
+        else:
+            lamps_off()
+    elif dow == 5: #Is Saturday
+        if 10 <= hour <= 20:
             range()
         else:
             lamps_off()
