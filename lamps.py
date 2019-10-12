@@ -26,6 +26,7 @@ off_time = 24
 lamp1 = False  #water
 lamp2 = False  #bed
 
+control.setmode(control.BCM)
 
 #Display GPIO setup
 RST = None
