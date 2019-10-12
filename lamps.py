@@ -98,7 +98,6 @@ def main():
     dow = int(day())
 
     outside = read_outside()
-    my_room = sensor.read_temperature() * 9 / 5 + 32
 
 #Monday=0
 #Tuesday=1
