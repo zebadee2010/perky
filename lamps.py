@@ -22,7 +22,7 @@ import subprocess
 
 #Global Variables
 on_time = 11
-off_time = 24
+off_time = 1
 lamp1 = False  #water
 lamp2 = False  #bed
 
@@ -84,21 +84,6 @@ def day():
     day = datetime.datetime.today().weekday()
     return day
 
-def main():
-    def range():
-        if outside >= 58:
-            lamps_off()
-        if 47 <= outside <= 57:
-            lamp2_only()
-        if outside <= 46:
-            both_lamps()
-
-
-    hour = int(curtime())
-    dow = int(day())
-
-    outside = read_outside()
-
 #Monday=0
 #Tuesday=1
 #Wednesday=2
@@ -106,6 +91,22 @@ def main():
 #FRiday=4
 #Saturday=5
 #Sunday=6
+
+def main():
+    def range():
+        if outside >= 58:
+            lamps_off()
+        if 47 <= outside <= 57:
+            lamp2_only()
+            time.sleep(900)
+            lamps_off()
+        if outside <= 46:
+            both_lamps()
+
+    hour = int(curtime())
+    dow = int(day())
+
+    outside = read_outside()
 
     if dow == 3: #Is Thursday
         if 10 <= hour <= 20:
