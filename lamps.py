@@ -22,7 +22,7 @@ import subprocess
 
 #Global Variables
 on_time = 11
-off_time = 1
+off_time = 24
 lamp1 = False  #water
 lamp2 = False  #bed
 
